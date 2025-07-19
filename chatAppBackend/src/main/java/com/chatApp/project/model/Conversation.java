@@ -20,7 +20,6 @@ public class Conversation {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private List<UUID> participants;
 
     @Column(nullable = false)
