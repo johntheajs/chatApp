@@ -11,8 +11,8 @@
   },
   "resources": [
     {
-      "type": "Microsoft.DBforPostgreSQL/servers",
-      "apiVersion": "2017-12-01",
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "apiVersion": "2022-01-20",
       "name": "chatapp-postgres",
       "location": "eastus",
       "sku": {
