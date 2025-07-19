@@ -20,8 +20,8 @@
         "tier": "Burstable"
       },
       "properties": {
-        "administratorLogin": "[parameters('administratorLogin')]",
-        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "administratorLogin": "[parameters('adminUsername')]",
+        "administratorLoginPassword": "[parameters('adminPassword')]",
         "version": "14",
         "storage": {
           "storageSizeGB": 32
