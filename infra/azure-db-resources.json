@@ -14,30 +14,26 @@
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
       "apiVersion": "2022-12-01",
       "name": "chatapp-postgres",
-      "location": "eastus",
+      "location": "centralindia",
       "sku": {
-        "name": "B_Gen5_1",
-        "tier": "Burstable",
-        "capacity": 1,
-        "family": "Gen5"
+        "name": "Standard_B1ms",
+        "tier": "Burstable"
       },
       "properties": {
-        "version": "11",
-        "sslEnforcement": "Enabled",
-        "storageProfile": {
-          "storageMB": 5120,
-          "backupRetentionDays": 7,
-          "geoRedundantBackup": "Disabled"
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "version": "14",
+        "storage": {
+          "storageSizeGB": 32
         },
-        "administratorLogin": "[parameters('adminUsername')]",
-        "administratorLoginPassword": "[parameters('adminPassword')]"
+        "createMode": "Default"
       }
     },
     {
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2021-06-01-preview",
       "name": "chatapp-keyvault",
-      "location": "eastus",
+      "location": "centralindia",
       "properties": {
         "sku": {
           "family": "A",
