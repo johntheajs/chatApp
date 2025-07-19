@@ -6,7 +6,7 @@
       "type": "string"
     },
     "adminPassword": {
-      "type": "secureString"
+      "type": "securestring"
     }
   },
   "resources": [
@@ -17,7 +17,7 @@
       "location": "eastus",
       "sku": {
         "name": "B_Gen5_1",
-        "tier": "Basic",
+        "tier": "Burstable",
         "capacity": 1,
         "family": "Gen5"
       },
