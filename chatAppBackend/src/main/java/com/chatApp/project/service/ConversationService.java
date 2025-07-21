@@ -1,6 +1,7 @@
 package com.chatApp.project.service;
 
 import com.chatApp.project.exception.ConversationAlreadyExistsException;
+import com.chatApp.project.exception.ConversationDoesNotExistException;
 import com.chatApp.project.model.Conversation;
 import com.chatApp.project.repository.ConversationRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,6 +46,9 @@ public class ConversationService {
     }
 
     public void deleteConversation(UUID id){
+        if(!(repo.existsById(id))){
+            throw new ConversationDoesNotExistException(id);
+        }
         repo.deleteById(id);
     }
 
@@ -52,9 +56,12 @@ public class ConversationService {
         return repo.findByNameContainingIgnoreCase(name);
     }
 
-    public Conversation getConversationByName(String name){
-        return repo.findByName(name);
-    }
+    public void updateParticipants(Conversation updatedCon){
+        Conversation con = repo.findById(updatedCon.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Conversation not found with ID: " + updatedCon.getId()));
 
+        con.setParticipants(updatedCon.getParticipants());
+        repo.save(con);
+    }
 
 }

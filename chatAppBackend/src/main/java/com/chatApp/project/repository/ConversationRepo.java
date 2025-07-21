@@ -11,5 +11,5 @@ import java.util.UUID;
 public interface ConversationRepo extends JpaRepository<Conversation, UUID> {
     List<Conversation> findByNameContainingIgnoreCase(String name);
     boolean existsByName(String name);
-    Conversation findByName(String name);
+    boolean existsById(UUID id);
 }
