@@ -18,17 +18,26 @@ public class Message {
     private UUID sender_id;
 
     @Column(nullable = false)
-    private UUID conversation_id;
+    private UUID conversationId;
 
     @Column(nullable = false)
     private String content;
 
     private Calendar created_at;
     private Boolean is_read;
+    private Boolean is_edited;
+
+    public Boolean getIs_edited() {
+        return is_edited;
+    }
+
+    public void setIs_edited(Boolean is_edited) {
+        this.is_edited = is_edited;
+    }
 
     public Message(UUID sender_id, UUID conversation_id, String content, Calendar created_at, Boolean is_read) {
         this.sender_id = sender_id;
-        this.conversation_id = conversation_id;
+        this.conversationId = conversation_id;
         this.content = content;
         this.created_at = created_at;
         this.is_read = is_read;
@@ -49,12 +58,12 @@ public class Message {
         this.sender_id = sender_id;
     }
 
-    public UUID getConversation_id() {
-        return conversation_id;
+    public UUID getConversationId() {
+        return conversationId;
     }
 
-    public void setConversation_id(UUID conversation_id) {
-        this.conversation_id = conversation_id;
+    public void setConversationId(UUID conversationId) {
+        this.conversationId = conversationId;
     }
 
     public String getContent() {
