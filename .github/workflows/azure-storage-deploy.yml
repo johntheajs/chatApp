@@ -39,7 +39,7 @@ jobs:
 
       - name: Deploy ARM Template as Deployment Stack
         run: |
-          az deployment stack group create \
+          az stack group create \
             --name attachment-storage \
             --resource-group chatapp-rg \
             --template-file ./infra/azure-db-resources.json \
