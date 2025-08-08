@@ -42,7 +42,7 @@ jobs:
           az stack group create \
             --name attachment-storage \
             --resource-group chatapp-rg \
-            --template-file ./infra/azure-db-resources.json \
+            --template-file ./infra/azure-storage-resources.json \
             --parameters storageAccountName="chatAppStore" \
             --deny-settings-mode None \
             --action-on-unmanage deleteResources
