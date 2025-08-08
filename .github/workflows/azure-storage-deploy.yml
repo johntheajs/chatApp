@@ -17,9 +17,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Upgrade Azure CLI
-        run: |
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      #   - name: Upgrade Azure CLI
+      #     run: |
+      #       curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1

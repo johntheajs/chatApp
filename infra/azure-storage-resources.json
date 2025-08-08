@@ -45,7 +45,7 @@
         "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
         "minimumTlsVersion": "TLS1_2",
         "supportsHttpsTrafficOnly": true,
-        "publicNetworkAccess": "[parameters('allowBlobPublicAccess')]"
+        "publicNetworkAccess": "Enabled"
       }
     }
   ],
