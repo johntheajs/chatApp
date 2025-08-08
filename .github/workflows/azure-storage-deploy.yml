@@ -43,6 +43,6 @@ jobs:
             --name attachment-storage \
             --resource-group chatapp-rg \
             --template-file ./infra/azure-storage-resources.json \
-            --parameters storageAccountName="chatAppStore" \
+            --parameters storageAccountName="chatappstore" \
             --deny-settings-mode None \
             --action-on-unmanage deleteResources
