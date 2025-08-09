@@ -1,0 +1,548 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+tags:
+- name: Conversation API
+  description: APIs for managing the Conversations
+- name: Attachment API
+  description: APIs for managing the attachments in the message
+- name: Message API
+  description: APIs to manage the messages
+- name: User API
+  description: APIs for User management
+paths:
+  /api/users:
+    get:
+      tags:
+      - User API
+      summary: List all Users
+      description: Get all users and their details
+      operationId: getAllUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    put:
+      tags:
+      - User API
+      summary: Update User details
+      description: Update User details with object in RequestBody
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+    post:
+      tags:
+      - User API
+      summary: Create User
+      description: Add an user with object in RequestBody
+      operationId: addUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+  /api/users/password:
+    put:
+      tags:
+      - User API
+      summary: Update User Password
+      description: Update User password with object in RequestBody
+      operationId: updatePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/mes:
+    get:
+      tags:
+      - Message API
+      summary: Get Message by ID
+      description: Get a Message with ID in RequestParam
+      operationId: getMessageByID
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Message"
+    put:
+      tags:
+      - Message API
+      summary: Update the message
+      description: Update the message with object in RequestBody
+      operationId: editMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Message"
+    post:
+      tags:
+      - Message API
+      summary: Create a Message
+      description: Create message with RequestBody
+      operationId: createMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+  /api/mes/read/{id}:
+    put:
+      tags:
+      - Message API
+      summary: Confirm message read
+      description: Change message IsRead
+      operationId: messageIsRead
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Message"
+  /api/con/update:
+    put:
+      tags:
+      - Conversation API
+      summary: Update Conversation
+      description: Update the conversation with RequestBody
+      operationId: updateParticipants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Conversation"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/con:
+    get:
+      tags:
+      - Conversation API
+      summary: List all conversations
+      description: Get all the conversation info
+      operationId: getAllConversations
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conversation"
+    post:
+      tags:
+      - Conversation API
+      summary: Create Conversation
+      description: Add a new conversation with RequestBody
+      operationId: createConversation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Conversation"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+  /api/attachments/upload:
+    post:
+      tags:
+      - Attachment API
+      summary: Upload Attachment
+      description: Uploads the file and stores the link with RequestParam
+      operationId: uploadAttachment
+      parameters:
+      - name: messageId
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Attachment"
+  /api/users/{id}:
+    get:
+      tags:
+      - User API
+      summary: Get User by ID
+      description: Get user with ID in PathVariable
+      operationId: getUserById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      tags:
+      - User API
+      summary: Delete the User
+      description: Delete the user with ID in PathVariable
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/users/search:
+    get:
+      tags:
+      - User API
+      summary: Search Users with Username
+      description: Get matching users with username in RequestParam
+      operationId: searchUsers
+      parameters:
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /api/users/online:
+    get:
+      tags:
+      - User API
+      summary: Get all users online
+      description: Get list of users available
+      operationId: getAllUsersOnline
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /api/users/online/{username}:
+    get:
+      tags:
+      - User API
+      summary: Check whether User is online
+      description: Check the availability of user
+      operationId: checkIsUserOnline
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: boolean
+  /api/mes/{id}:
+    get:
+      tags:
+      - Message API
+      summary: Get Messages of a Conversation
+      description: Get all messages of a conversation with ID in PathVariable
+      operationId: getAllMessagesWithConID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+    delete:
+      tags:
+      - Message API
+      summary: Delete the Message
+      description: Delete the message with ID in PathVariable
+      operationId: deleteMessage
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/con/{id}:
+    get:
+      tags:
+      - Conversation API
+      summary: Get Conversation by ID
+      description: Get the specific conversation by ID in PathVariable
+      operationId: getConversationById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Conversation"
+    delete:
+      tags:
+      - Conversation API
+      summary: Delete the conversation
+      description: Delete a specific conversation with ID in PathVariable
+      operationId: deleteConversation
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/con/search:
+    get:
+      tags:
+      - Conversation API
+      summary: Get Conversation by name
+      description: Search for conversation with name in RequestParam
+      operationId: searchConversationByName
+      parameters:
+      - name: name
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conversation"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        hashed_password:
+          type: string
+        avatar_url:
+          type: string
+        last_seen:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        is_online:
+          type: boolean
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sender_id:
+          type: string
+          format: uuid
+        conversationId:
+          type: string
+          format: uuid
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        is_read:
+          type: boolean
+        is_edited:
+          type: boolean
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        is_group:
+          type: boolean
+        name:
+          type: string
+        participants:
+          type: array
+          items:
+            type: string
+            format: uuid
+        created_at:
+          type: string
+          format: date-time
+        last_message_at:
+          type: string
+          format: date-time
+    Attachment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        message_id:
+          type: string
+          format: uuid
+        file_url:
+          type: string
+        file_type:
+          type: string
+        uploaded_at:
+          type: string
+          format: date-time
