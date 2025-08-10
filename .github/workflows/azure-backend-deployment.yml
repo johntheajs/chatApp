@@ -26,12 +26,10 @@ jobs:
 
       - name: Deploy ARM Template as Deployment Stack
         run: |
-          OPENAPI_CONTENT=$(base64 -w 0 openapi.yaml)
           az stack group create \
             --name chatapp-backend-stack \
             --resource-group chatapp-rg \
             --template-file ./infra/azure-backend-resources.json \
             --deny-settings-mode None \
             --action-on-unmanage deleteResources \
-            --parameters @infra/azure-backend-parameters.json \
-                         openApiSpecContent="$OPENAPI_CONTENT"
+            --parameters @infra/azure-backend-parameters.json

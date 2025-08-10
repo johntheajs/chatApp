@@ -174,7 +174,7 @@
 
     {
         "type": "Microsoft.App/containerApps",
-        "apiVersion": "2024-03-01",
+        "apiVersion": "2022-01-01-preview",
         "name": "[parameters('containerAppName')]",
         "location": "[parameters('location')]",
         "dependsOn": [
@@ -186,7 +186,6 @@
             "configuration": {
             "ingress": {
                 "external": true,
-                "allowInsecure": false,
                 "targetPort": 8080,
                 "traffic": [
                 {
@@ -195,6 +194,13 @@
                 }
                 ]
             },
+            "registries": [
+                {
+                "server": "[format('{0}.azurecr.io', parameters('acrName'))]",
+                "usernameSecretRef": "acr-username",
+                "passwordSecretRef": "acr-password"
+                }
+            ],
             "secrets": [
                 {
                 "name": "acr-username",
@@ -203,13 +209,6 @@
                 {
                 "name": "acr-password",
                 "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').passwords[0].value]"
-                }
-            ],
-            "registries": [
-                {
-                "server": "[format('{0}.azurecr.io', parameters('acrName'))]",
-                "usernameSecretRef": "acr-username",
-                "passwordSecretRef": "acr-password"
                 }
             ]
             },
@@ -220,7 +219,7 @@
                 "image": "[parameters('containerImage')]",
                 "resources": {
                     "cpu": 0.5,
-                    "memory": "1.0Gi"
+                    "memory": "1Gi"
                 }
                 }
             ]
@@ -249,8 +248,8 @@
         "apiVersion": "2024-06-01-preview",
         "name": "[format('{0}/{1}', parameters('apimName'), 'my-api')]",
         "properties": {
-            "format": "openapi",
-            "value": "[base64ToString(parameters('openApiSpecContent'))]",
+            "format": "openapi-link",
+            "value": "parameters('openApiSpecContent')",
             "path": "myapi",
             "displayName": "My API",
             "protocols": [ "https" ]

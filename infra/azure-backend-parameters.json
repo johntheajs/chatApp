@@ -9,5 +9,6 @@
   "containerImage": { "value": "chatappacrazurebackend.azurecr.io/chatappbackend:latest" },
   "apimName": { "value": "chatappbackendapis" },
   "lbName": { "value": "chatappbackendlb" },
-  "logAnalyticsWorkspaceName": { "value": "chatappbackendlogworkspace" }
+  "logAnalyticsWorkspaceName": { "value": "chatappbackendlogworkspace" },
+  "openApiSpecContent": { "value": "https://raw.githubusercontent.com/johntheajs/chatApp/main/openapi.yaml" }
 }
