@@ -234,7 +234,7 @@
         "name": "[format('{0}/{1}', parameters('apimName'), 'my-api')]",
         "properties": {
             "format": "openapi-link",
-            "value": "parameters('openApiSpecContent')",
+            "value": "[parameters('openApiSpecContent')]",
             "path": "myapi",
             "displayName": "My API",
             "protocols": [ "https" ]
