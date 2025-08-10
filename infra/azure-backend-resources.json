@@ -177,38 +177,23 @@
         "apiVersion": "2022-03-01",
         "name": "[parameters('containerAppName')]",
         "location": "[parameters('location')]",
-        "dependsOn": [
-            "[resourceId('Microsoft.App/managedEnvironments', parameters('containerEnvName'))]",
-            "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]"
-        ],
+        "identity": {
+            "type": "UserAssigned",
+            "userAssignedIdentities": {
+            "/subscriptions/323ba273-9a55-4032-8209-98e8b7b440d7/resourcegroups/chatapp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/chatapp-acrpull": {}
+            }
+        },
         "properties": {
             "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('containerEnvName'))]",
             "configuration": {
             "ingress": {
                 "external": true,
-                "targetPort": 8080,
-                "traffic": [
-                {
-                    "latestRevision": true,
-                    "weight": 100
-                }
-                ]
+                "targetPort": 8080
             },
             "registries": [
                 {
                 "server": "[format('{0}.azurecr.io', parameters('acrName'))]",
-                "usernameSecretRef": "acr-username",
-                "passwordSecretRef": "acr-password"
-                }
-            ],
-            "secrets": [
-                {
-                "name": "acr-username",
-                "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').username]"
-                },
-                {
-                "name": "acr-password",
-                "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').passwords[0].value]"
+                "identity": "/subscriptions/323ba273-9a55-4032-8209-98e8b7b440d7/resourcegroups/chatapp-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/chatapp-acrpull"
                 }
             ]
             },
@@ -226,7 +211,6 @@
             }
         }
     },
-
 
 
     {
