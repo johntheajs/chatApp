@@ -197,19 +197,19 @@
           },
           "secrets": [
             {
-              "name": "ACR_USERNAME",
+              "name": "acr-username",
               "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').username]"
             },
             {
-              "name": "ACR_PASSWORD",
+              "name": "acr-password",
               "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').passwords[0].value]"
             }
           ],
           "registries": [
             {
-              "server": "[concat(parameters('acrName'), '.azurecr.io')]",
-              "username": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').username]",
-              "passwordSecretRef": "ACR_PASSWORD"
+              "server": "[format('{0}.azurecr.io', parameters('acrName'))]",
+              "usernameSecretRef": "acr-username",
+              "passwordSecretRef": "acr-password"
             }
           ]
         },
