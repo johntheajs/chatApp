@@ -63,8 +63,12 @@ jobs:
           echo $ACR_PASSWORD | docker login chatappacrazurebackend.azurecr.io --username $ACR_USERNAME --password-stdin
 
           # Build Docker image with commit SHA and latest tags
-          docker build -t chatappacrazurebackend.azurecr.io/chatappbackend:${{ github.sha }} \
-                      -t chatappacrazurebackend.azurecr.io/chatappbackend:latest build/build.dockerfile
+          # docker build -t chatappacrazurebackend.azurecr.io/chatappbackend:${{ github.sha }} \
+          #             -t chatappacrazurebackend.azurecr.io/chatappbackend:latest build/build.dockerfile
+
+          docker build -f build/build.dockerfile \
+                      -t chatappacrazurebackend.azurecr.io/chatappbackend:${{ github.sha }} \
+                      -t chatappacrazurebackend.azurecr.io/chatappbackend:latest chatAppBackend/
 
           # Push both tags
           docker push chatappacrazurebackend.azurecr.io/chatappbackend:${{ github.sha }}

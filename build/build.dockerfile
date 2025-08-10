@@ -13,7 +13,7 @@ RUN mkdir -p $APP_HOME && chown appuser:appgroup $APP_HOME
 WORKDIR $APP_HOME
 
 # Copy the pre-built JAR into the image with correct ownership
-COPY --chown=appuser:appgroup output/*.jar app.jar
+COPY --chown=appuser:appgroup target/*.jar app.jar
 
 # Restrict permissions: read & execute for owner only
 RUN chmod 500 app.jar
