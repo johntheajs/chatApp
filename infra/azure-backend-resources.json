@@ -173,59 +173,61 @@
     },
 
     {
-      "type": "Microsoft.App/containerApps",
-      "apiVersion": "2024-03-01",
-      "name": "[parameters('containerAppName')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.App/managedEnvironments', parameters('containerEnvName'))]",
-        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]"
-      ],
-      "properties": {
-        "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('containerEnvName'))]",
-        "configuration": {
-          "ingress": {
-            "external": true,
-            "targetPort": 8080,
-            "traffic": [
-              {
-                "latestRevision": true,
-                "weight": 100
-              }
-            ]
-          },
-          "secrets": [
-            {
-              "name": "acr-username",
-              "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').username]"
+        "type": "Microsoft.App/containerApps",
+        "apiVersion": "2024-03-01",
+        "name": "[parameters('containerAppName')]",
+        "location": "[parameters('location')]",
+        "dependsOn": [
+            "[resourceId('Microsoft.App/managedEnvironments', parameters('containerEnvName'))]",
+            "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]"
+        ],
+        "properties": {
+            "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('containerEnvName'))]",
+            "configuration": {
+            "ingress": {
+                "external": true,
+                "allowInsecure": false,
+                "targetPort": 8080,
+                "traffic": [
+                {
+                    "latestRevision": true,
+                    "weight": 100
+                }
+                ]
             },
-            {
-              "name": "acr-password",
-              "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').passwords[0].value]"
+            "secrets": [
+                {
+                "name": "acr-username",
+                "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').username]"
+                },
+                {
+                "name": "acr-password",
+                "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').passwords[0].value]"
+                }
+            ],
+            "registries": [
+                {
+                "server": "[format('{0}.azurecr.io', parameters('acrName'))]",
+                "usernameSecretRef": "acr-username",
+                "passwordSecretRef": "acr-password"
+                }
+            ]
+            },
+            "template": {
+            "containers": [
+                {
+                "name": "app",
+                "image": "[parameters('containerImage')]",
+                "resources": {
+                    "cpu": 0.5,
+                    "memory": "1.0Gi"
+                }
+                }
+            ]
             }
-          ],
-          "registries": [
-            {
-              "server": "[format('{0}.azurecr.io', parameters('acrName'))]",
-              "usernameSecretRef": "acr-username",
-              "passwordSecretRef": "acr-password"
-            }
-          ]
-        },
-        "template": {
-          "containers": [
-            {
-              "name": "app",
-              "image": "[parameters('containerImage')]",
-              "resources": {
-                "cpu": 0.5,
-                "memory": "1.0Gi"
-              }
-            }
-          ]
         }
-      }
     },
+
 
     {
       "type": "Microsoft.ApiManagement/service",
