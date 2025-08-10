@@ -174,7 +174,7 @@
 
     {
         "type": "Microsoft.App/containerApps",
-        "apiVersion": "2022-01-01-preview",
+        "apiVersion": "2022-03-01",
         "name": "[parameters('containerAppName')]",
         "location": "[parameters('location')]",
         "dependsOn": [
@@ -226,6 +226,7 @@
             }
         }
     },
+
 
 
     {
