@@ -54,6 +54,12 @@
         "metadata": {
             "description": "The full contents of the OpenAPI YAML specification."
         }
+    },
+    "logAnalyticsWorkspaceName": {
+        "type": "string",
+        "metadata": {
+            "description": "The name of the log analytics workspace."
+        }
     }
 
     },
@@ -132,6 +138,19 @@
         "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').passwords[0].value]"
       }
     },
+    {
+        "type": "Microsoft.OperationalInsights/workspaces",
+        "apiVersion": "2021-06-01",
+        "name": "[parameters('logAnalyticsWorkspaceName')]",
+        "location": "[parameters('location')]",
+        "properties": {
+            "sku": {
+            "name": "PerGB2018"
+            },
+            "retentionInDays": 30
+        }
+    },
+
 
     {
       "type": "Microsoft.App/managedEnvironments",
@@ -140,11 +159,16 @@
       "location": "[parameters('location')]",
       "properties": {
         "appLogsConfiguration": {
-          "destination": "log-analytics"
+          "destination": "log-analytics",
+            "logAnalyticsConfiguration": {
+                "customerId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')), '2021-06-01').customerId]",
+                "sharedKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')), '2021-06-01').primarySharedKey]"
+            }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
       ]
     },
 
@@ -225,17 +249,16 @@
         "name": "[format('{0}/{1}', parameters('apimName'), 'my-api')]",
         "properties": {
             "format": "openapi",
-            "value": "[parameters('openApiSpecContent')]",
+            "value": "[base64ToString(parameters('openApiSpecContent'))]",
             "path": "myapi",
-            "protocols": [
-            "https"
-            ],
-            "displayName": "My API"
+            "displayName": "My API",
+            "protocols": [ "https" ]
         },
         "dependsOn": [
             "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
         ]
     },
+
 
 
 

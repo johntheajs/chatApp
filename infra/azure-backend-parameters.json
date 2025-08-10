@@ -8,5 +8,6 @@
   "containerAppName": { "value": "chatappbackendappcontainer" },
   "containerImage": { "value": "chatappacrazurebackend.azurecr.io/chatappbackend:latest" },
   "apimName": { "value": "chatappbackendapis" },
-  "lbName": { "value": "chatappbackendlb" }
+  "lbName": { "value": "chatappbackendlb" },
+  "logAnalyticsWorkspaceName": { "value": "chatappbackendlogworkspace" }
 }

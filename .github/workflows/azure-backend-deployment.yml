@@ -26,7 +26,7 @@ jobs:
 
       - name: Deploy ARM Template as Deployment Stack
         run: |
-          OPENAPI_CONTENT=$(cat openapi.yaml | sed 's/"/\\"/g' | tr -d '\n')
+          OPENAPI_CONTENT=$(base64 -w 0 openapi.yaml)
           az stack group create \
             --name chatapp-backend-stack \
             --resource-group chatapp-rg \
