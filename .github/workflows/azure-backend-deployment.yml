@@ -1,0 +1,35 @@
+name: Deploy Azure Backend Resources
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Login to Azure using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy ARM Template as Deployment Stack
+        run: |
+          az stack group create \
+            --name chatapp-backend-stack \
+            --resource-group chatapp-rg \
+            --template-file ./infra/azure-storage-resources.json \
+            --parameters @infra/azure-backend-parameters.json \
+            --deny-settings-mode None \
+            --action-on-unmanage deleteResources

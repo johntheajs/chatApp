@@ -2,7 +2,7 @@ name: Build Chat App
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 permissions:
   id-token: write
@@ -48,3 +48,24 @@ jobs:
         with:
           name: chat-app-jar
           path: output/*.jar
+
+      - name: Get ACR credentials from Key Vault
+        run: |
+          ACR_USERNAME=$(az keyvault secret show --vault-name "chatapp-kv-123" --name "acr-username" --query value -o tsv)
+          ACR_PASSWORD=$(az keyvault secret show --vault-name "chatapp-kv-123" --name "acr-password" --query value -o tsv)
+          echo "ACR_USERNAME=$ACR_USERNAME" >> $GITHUB_ENV
+          echo "ACR_PASSWORD=$ACR_PASSWORD" >> $GITHUB_ENV
+
+      - name: Build & push image
+        run: |
+
+          # Docker login to ACR
+          echo $ACR_PASSWORD | docker login chatappacrazurebackend.azurecr.io --username $ACR_USERNAME --password-stdin
+
+          # Build Docker image with commit SHA and latest tags
+          docker build -t chatappacrazurebackend.azurecr.io/chatappbackend:${{ github.sha }} \
+                      -t chatappacrazurebackend.azurecr.io/chatappbackend:latest build/
+
+          # Push both tags
+          docker push chatappacrazurebackend.azurecr.io/chatappbackend:${{ github.sha }}
+          docker push chatappacrazurebackend.azurecr.io/chatappbackend:latest

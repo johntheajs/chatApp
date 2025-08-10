@@ -1,8 +1,3 @@
-<!-- Got it ✅
-Here’s the **AZURE-CHEAT-SHEET.md** updated with a simple ASCII flow diagram so you can quickly visualize the process without reading every command. -->
-
----
-
 ````markdown
 # 🚀 Azure Cheat Sheet – Quick Reference
 
