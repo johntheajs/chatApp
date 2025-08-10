@@ -64,7 +64,7 @@ jobs:
 
           # Build Docker image with commit SHA and latest tags
           docker build -t chatappacrazurebackend.azurecr.io/chatappbackend:${{ github.sha }} \
-                      -t chatappacrazurebackend.azurecr.io/chatappbackend:latest build/
+                      -t chatappacrazurebackend.azurecr.io/chatappbackend:latest build/build.dockerfile
 
           # Push both tags
           docker push chatappacrazurebackend.azurecr.io/chatappbackend:${{ github.sha }}
