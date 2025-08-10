@@ -189,11 +189,10 @@
             "targetPort": 8080,
             "traffic": [
               {
-                "revisionName": "current",
+                "latestRevision": true,
                 "weight": 100
               }
-            ],
-            "transport": "auto"
+            ]
           },
           "secrets": [
             {
