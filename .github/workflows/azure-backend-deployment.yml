@@ -3,7 +3,7 @@ name: Deploy Azure Backend Resources
 on:
   push:
     branches:
-      - master
+      - main
 
 permissions:
   id-token: write
