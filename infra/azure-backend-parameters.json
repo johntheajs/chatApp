@@ -3,5 +3,10 @@
   "keyVaultName": { "value": "chatapp-kv-123" },
   "principalObjectId1": { "value": "ef674ac9-0150-4390-8be7-0cba98a43c2f" },
   "principalObjectId2": { "value": "ac4c95ad-f2b3-497e-b481-04d2f5210a40" },
-  "acrSku": { "value": "Basic" }
+  "acrSku": { "value": "Basic" },
+  "containerEnvName": { "value": "chatappbackendappcontainerenv" },
+  "containerAppName": { "value": "chatappbackendappcontainer" },
+  "containerImage": { "value": "chatappacrazurebackend.azurecr.io/chatappbackend:latest" },
+  "apimName": { "value": "chatappbackendapis" },
+  "lbName": { "value": "chatappbackendlb" }
 }

@@ -30,9 +30,36 @@
     "metadata": {
         "description": "Object ID of second principal."
     }
+    },
+    "containerEnvName": {
+      "type": "string"
+    },
+    "containerAppName": {
+      "type": "string"
+    },
+    "containerImage": {
+      "type": "string",
+      "metadata": {
+        "description": "Full image reference (e.g. <acrName>.azurecr.io/my-repo:tag). You may override after pushing image."
+      }
+    },
+    "apimName": {
+      "type": "string"
+    },
+    "lbName": {
+      "type": "string"
+    },
+   "openApiSpecContent": {
+        "type": "string",
+        "metadata": {
+            "description": "The full contents of the OpenAPI YAML specification."
+        }
     }
 
-  },
+    },
+
+
+
   "resources": [
     {
       "type": "Microsoft.ContainerRegistry/registries",
@@ -104,8 +131,178 @@
       "properties": {
         "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').passwords[0].value]"
       }
+    },
+
+    {
+      "type": "Microsoft.App/managedEnvironments",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('containerEnvName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "appLogsConfiguration": {
+          "destination": "log-analytics"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+      ]
+    },
+
+    {
+      "type": "Microsoft.App/containerApps",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('containerAppName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.App/managedEnvironments', parameters('containerEnvName'))]",
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]"
+      ],
+      "properties": {
+        "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('containerEnvName'))]",
+        "configuration": {
+          "ingress": {
+            "external": true,
+            "targetPort": 8080,
+            "traffic": [
+              {
+                "revisionName": "current",
+                "weight": 100
+              }
+            ],
+            "transport": "auto"
+          },
+          "secrets": [
+            {
+              "name": "ACR_USERNAME",
+              "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').username]"
+            },
+            {
+              "name": "ACR_PASSWORD",
+              "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').passwords[0].value]"
+            }
+          ],
+          "registries": [
+            {
+              "server": "[concat(parameters('acrName'), '.azurecr.io')]",
+              "username": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2023-01-01-preview').username]",
+              "passwordSecretRef": "ACR_PASSWORD"
+            }
+          ]
+        },
+        "template": {
+          "containers": [
+            {
+              "name": "app",
+              "image": "[parameters('containerImage')]",
+              "resources": {
+                "cpu": 0.5,
+                "memory": "1.0Gi"
+              }
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-06-01-preview",
+      "name": "[parameters('apimName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Consumption",
+        "capacity": 0
+      },
+      "properties": {
+        "publisherEmail": "johnthomasajs@gmail.com",
+        "publisherName": "API Owner"
+      }
+    },
+
+    {
+        "type": "Microsoft.ApiManagement/service/apis",
+        "apiVersion": "2024-06-01-preview",
+        "name": "[format('{0}/{1}', parameters('apimName'), 'my-api')]",
+        "properties": {
+            "format": "openapi",
+            "value": "[parameters('openApiSpecContent')]",
+            "path": "myapi",
+            "protocols": [
+            "https"
+            ],
+            "displayName": "My API"
+        },
+        "dependsOn": [
+            "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
+        ]
+    },
+
+
+
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-07-01",
+      "name": "[concat(parameters('lbName'), '-pip')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "idleTimeoutInMinutes": 30
+      }
+    },
+
+    {
+      "type": "Microsoft.Network/loadBalancers",
+      "apiVersion": "2024-07-01",
+      "name": "[parameters('lbName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "LoadBalancerFrontEnd",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('lbName'), '-pip'))]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "BackendPool"
+          }
+        ],
+        "loadBalancingRules": []
+      }
     }
    
-  ]
+  ],
+  "outputs": {
+    "acrLoginServer": {
+      "type": "string",
+      "value": "[concat(parameters('acrName'), '.azurecr.io')]"
+    },
+    "keyVaultUri": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))).properties.vaultUri]"
+    },
+    "containerAppFqdn": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.App/containerApps', parameters('containerAppName'))).properties.configuration.ingress.fqdn]"
+    },
+    "apimGatewayUrl": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('apimName'))).gatewayUrl]"
+    },
+    "loadBalancerIp": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('lbName'), '-pip'))).properties.ipAddress]"
+    }
+  }
   
 }
