@@ -289,28 +289,6 @@
       }
     }
    
-  ],
-  "outputs": {
-    "acrLoginServer": {
-      "type": "string",
-      "value": "[concat(parameters('acrName'), '.azurecr.io')]"
-    },
-    "keyVaultUri": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))).properties.vaultUri]"
-    },
-    "containerAppFqdn": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.App/containerApps', parameters('containerAppName'))).properties.configuration.ingress.fqdn]"
-    },
-    "apimGatewayUrl": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.ApiManagement/service', parameters('apimName'))).gatewayUrl]"
-    },
-    "loadBalancerIp": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('lbName'), '-pip'))).properties.ipAddress]"
-    }
-  }
+  ]
   
 }
